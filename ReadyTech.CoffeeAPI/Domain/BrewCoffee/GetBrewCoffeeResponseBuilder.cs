@@ -1,7 +1,11 @@
-﻿namespace ReadyTech.CoffeeAPI.Domain.BrewCoffee
+﻿using ReadyTech.CoffeeAPI.Infrastructure;
+
+namespace ReadyTech.CoffeeAPI.Domain.BrewCoffee
 {
-    public class GetBrewCoffeeResponseBuilder : IGetBrewCoffeeResponseBuilder
+    public class GetBrewCoffeeResponseBuilder(IDateTimeProvider dateTimeProvider) : IGetBrewCoffeeResponseBuilder
     {
-        public GetBrewCoffeeResponse Build() => new GetBrewCoffeeResponse("Your piping hot coffee is ready", DateTime.UtcNow);
+        private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
+
+        public GetBrewCoffeeResponse Build() => new("Your piping hot coffee is ready", _dateTimeProvider.Now);
     }
 }

@@ -28,21 +28,4 @@ namespace ReadyTech.CoffeeAPI.Infrastructure
             await _next(context);
         }
     }
-
-    public static class ServiceUnavailableEnablerMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseServiceUnavailableEnablerMiddleware(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<ServiceUnavailableEnablerMiddleware>();
-        }
-
-        public static ControllerActionEndpointConventionBuilder MapServiceUnavailableEnablerEndpoint(this IEndpointRouteBuilder endpoints, string pattern)
-        {
-            _ = endpoints.CreateApplicationBuilder()
-                .UseMiddleware<ServiceUnavailableEnablerMiddleware>()
-                .Build();
-
-            return endpoints.MapControllerRoute(name: "service-unavailable", pattern: pattern);
-        }
-    }
 }

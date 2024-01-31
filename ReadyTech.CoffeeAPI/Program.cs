@@ -15,7 +15,9 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddTransient<IGetBrewCoffeeResponseBuilder, GetBrewCoffeeResponseBuilder>();
+builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
 var app = builder.Build();
 
@@ -28,13 +30,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseServiceUnavailableEnablerMiddleware();
+app.UseBrewCoffeeMiddleware();
 
 app.UseEndpoints(endpoints => 
 {
-    _ = endpoints.MapServiceUnavailableEnablerEndpoint("/brew-coffee");
+    _ = endpoints.MapBrewCoffeeEndpoint("/brew-coffee");
 });
-
 
 app.Run();
 
