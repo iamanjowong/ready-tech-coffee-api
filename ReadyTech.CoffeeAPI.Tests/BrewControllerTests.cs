@@ -27,5 +27,30 @@ namespace ReadyTech.CoffeeAPI.Tests
             Assert.NotEqual(default, getBrewCoffeeResponse.Prepared);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
+
+        [Fact]
+        public async Task WhenGetBrewCoffeeIsCalled_OnEveryFifthCall_ShouldReturnServiceUnavailable()
+        {
+            var client = _factory.CreateClient();
+            var serviceUnavailableCounter = 0;
+
+            for (var i = 1; i <= 10; i++)
+            {
+                var response = await client.GetAsync(BREW_COFFEE_URL);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if(i % 5 == 0)
+                {
+                    Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+                    Assert.Equal(string.Empty, content);
+                    serviceUnavailableCounter++;
+                    continue;
+                }
+
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.NotEqual(string.Empty, content);
+            }
+            Assert.Equal(2, serviceUnavailableCounter);
+        }
     }
 }

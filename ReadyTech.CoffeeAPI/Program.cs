@@ -4,6 +4,7 @@ using ReadyTech.CoffeeAPI.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -14,7 +15,7 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IGetBrewCoffeeService, GetBrewCoffeeService>();
+builder.Services.AddTransient<IGetBrewCoffeeResponseBuilder, GetBrewCoffeeResponseBuilder>();
 
 var app = builder.Build();
 
@@ -25,11 +26,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseRouting();
 
-app.UseAuthorization();
+app.UseServiceUnavailableEnablerMiddleware();
 
-app.MapControllers();
+app.UseEndpoints(endpoints => 
+{
+    _ = endpoints.MapServiceUnavailableEnablerEndpoint("/brew-coffee");
+});
+
 
 app.Run();
 

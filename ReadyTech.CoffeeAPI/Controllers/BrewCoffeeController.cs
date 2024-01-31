@@ -5,14 +5,14 @@ namespace ReadyTech.CoffeeAPI.Controllers
 {
     [Route("brew-coffee")]
     [ApiController]
-    public class BrewCoffeeController(IGetBrewCoffeeService brewCoffeeService) : ControllerBase
+    public class BrewCoffeeController(IGetBrewCoffeeResponseBuilder brewCoffeeResponseBuilder) : ControllerBase
     {
-        private readonly IGetBrewCoffeeService _brewCoffeeService = brewCoffeeService;
+        private readonly IGetBrewCoffeeResponseBuilder _brewCoffeeResponseBuilder = brewCoffeeResponseBuilder;
 
         [HttpGet]
         public ActionResult<GetBrewCoffeeResponse> Get()
         {
-            var getBrewCoffeeResponse = _brewCoffeeService.GetBrewCoffeeResponse();
+            var getBrewCoffeeResponse = _brewCoffeeResponseBuilder.Build();
 
             return Ok(getBrewCoffeeResponse);
         }
