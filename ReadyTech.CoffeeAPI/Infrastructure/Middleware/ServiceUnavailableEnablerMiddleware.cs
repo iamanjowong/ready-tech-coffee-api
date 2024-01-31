@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace ReadyTech.CoffeeAPI.Infrastructure
+namespace ReadyTech.CoffeeAPI.Infrastructure.Middleware
 {
     public class ServiceUnavailableEnablerMiddleware(RequestDelegate next, IMemoryCache cache)
     {

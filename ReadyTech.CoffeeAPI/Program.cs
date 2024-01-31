@@ -1,5 +1,8 @@
 using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
-using ReadyTech.CoffeeAPI.Infrastructure;
+using ReadyTech.CoffeeAPI.Domain.OpenWeatherMap;
+using ReadyTech.CoffeeAPI.Infrastructure.Middleware;
+using ReadyTech.CoffeeAPI.Infrastructure.Providers;
+using ReadyTech.CoffeeAPI.Infrastructure.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +19,10 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IGetBrewCoffeeResponseBuilder, GetBrewCoffeeResponseBuilder>();
+builder.Services.Configure<OpenWeatherMapOptions>(builder.Configuration.GetSection("OpenWeatherMap"));
+
+builder.Services.AddHttpClient<OpenWeatherMapClient>();
+builder.Services.AddTransient<IGetBrewCoffeeHandler, GetBrewCoffeeHandler>();
 builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
 var app = builder.Build();
@@ -35,6 +41,7 @@ app.UseBrewCoffeeMiddleware();
 app.UseEndpoints(endpoints => 
 {
     _ = endpoints.MapBrewCoffeeEndpoint("/brew-coffee");
+    _ = endpoints.MapControllers();
 });
 
 app.Run();

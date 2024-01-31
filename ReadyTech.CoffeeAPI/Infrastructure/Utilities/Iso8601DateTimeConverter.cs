@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace ReadyTech.CoffeeAPI.Infrastructure
+namespace ReadyTech.CoffeeAPI.Infrastructure.Utilities
 {
     public class Iso8601DateTimeConverter : JsonConverter<DateTime>
     {

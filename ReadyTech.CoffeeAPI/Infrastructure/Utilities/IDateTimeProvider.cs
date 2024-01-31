@@ -1,4 +1,4 @@
-﻿namespace ReadyTech.CoffeeAPI.Infrastructure
+﻿namespace ReadyTech.CoffeeAPI.Infrastructure.Providers
 {
     public interface IDateTimeProvider
     {

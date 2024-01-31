@@ -1,4 +1,6 @@
-﻿namespace ReadyTech.CoffeeAPI.Infrastructure
+﻿using ReadyTech.CoffeeAPI.Infrastructure.Providers;
+
+namespace ReadyTech.CoffeeAPI.Infrastructure.Middleware
 {
     public class TeapotMiddleware(RequestDelegate next, IDateTimeProvider dateTimeProvider)
     {
