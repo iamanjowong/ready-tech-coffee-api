@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
 
 namespace ReadyTech.CoffeeAPI.Controllers
 {
     [Route("brew-coffee")]
     [ApiController]
-    public class BrewCoffeeController : ControllerBase
+    public class BrewCoffeeController(IGetBrewCoffeeService brewCoffeeService) : ControllerBase
     {
-        public BrewCoffeeController() { }
+        private readonly IGetBrewCoffeeService _brewCoffeeService = brewCoffeeService;
 
         [HttpGet]
-        public ActionResult Get()
+        public ActionResult<GetBrewCoffeeResponse> Get()
         {
-            return Ok();
+            var getBrewCoffeeResponse = _brewCoffeeService.GetBrewCoffeeResponse();
+
+            return Ok(getBrewCoffeeResponse);
         }
     }
 }

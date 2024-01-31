@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
 using System.Net;
+using System.Net.Http.Json;
 
 namespace ReadyTech.CoffeeAPI.Tests
 {
@@ -18,6 +20,11 @@ namespace ReadyTech.CoffeeAPI.Tests
 
             response.EnsureSuccessStatusCode();
             Assert.NotNull(response);
+            Assert.NotNull(response.Content);
+            var getBrewCoffeeResponse = await response.Content.ReadFromJsonAsync<GetBrewCoffeeResponse>();
+            Assert.NotNull(getBrewCoffeeResponse);
+            Assert.Equal("Your piping hot coffee is ready", getBrewCoffeeResponse.Message);
+            Assert.NotEqual(default, getBrewCoffeeResponse.Prepared);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
     }
