@@ -1,4 +1,6 @@
-﻿namespace ReadyTech.CoffeeAPI.Infrastructure.Middleware
+﻿using ReadyTech.CoffeeAPI.Infrastructure.Middleware;
+
+namespace ReadyTech.CoffeeAPI.Domain.BrewCoffee
 {
     public static class BrewCoffeeMiddlewareExtensions
     {

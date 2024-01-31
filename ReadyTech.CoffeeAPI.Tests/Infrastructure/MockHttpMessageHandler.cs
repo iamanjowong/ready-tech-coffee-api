@@ -10,27 +10,16 @@ namespace ReadyTech.CoffeeAPI.Tests.Infrastructure
 
         public bool WasCalled() => _callCounter > 0;
 
-        public void When(string requestUri)
-        {
-            _responses.Add(requestUri, new HttpResponseMessage());
-        }
-
-        public void Respond(string requestUri, object? content, HttpStatusCode statusCode = HttpStatusCode.OK)
-        {
-            if (!_responses.TryGetValue(requestUri, out var response))
+        public void Respond(string requestUri, object? content, HttpStatusCode statusCode = HttpStatusCode.OK) =>
+            _responses[requestUri] = new HttpResponseMessage()
             {
-                throw new InvalidOperationException($"No setup found for {requestUri}");
-            }
-
-            response.Content = new StringContent(JsonConvert.SerializeObject(content));
-            response.StatusCode = statusCode;
-
-            _responses[requestUri] = response;
-        }
+                Content = new StringContent(JsonConvert.SerializeObject(content)),
+                StatusCode = statusCode
+            };
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var requestUri = request.RequestUri.ToString();
+            var requestUri = request.RequestUri!.ToString();
 
             _callCounter++;
 

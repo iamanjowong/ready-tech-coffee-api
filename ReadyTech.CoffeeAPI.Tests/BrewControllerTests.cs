@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Moq;
-using Moq.Protected;
-using Newtonsoft.Json;
 using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
 using ReadyTech.CoffeeAPI.Domain.OpenWeatherMap;
 using ReadyTech.CoffeeAPI.Infrastructure.Providers;
@@ -214,18 +211,9 @@ namespace ReadyTech.CoffeeAPI.Tests
             return mockDateTimeProvider;
         }
 
-        private static Mock<IOptions<OpenWeatherMapOptions>> OpenWeatherMapOptions(string url = "https://fake-url", string apiKey = "fake-api-key")
-        {
-            var optionsMock = new Mock<IOptions<OpenWeatherMapOptions>>();
-            optionsMock.Setup(x => x.Value).Returns(new OpenWeatherMapOptions { Url = url, ApiKey = apiKey });
-
-            return optionsMock;
-        }
-
-        private MockHttpMessageHandler HttpMessageHandler(string requestUri = "https://fake-url/2.5/weather?q=Sydney&appid=fake-api-key", object? content = null)
+        private static MockHttpMessageHandler HttpMessageHandler(string requestUri = "https://fake-url/2.5/weather?q=Sydney&appid=fake-api-key", object? content = null)
         {
             var mockHttpMessageHandler = new MockHttpMessageHandler();
-            mockHttpMessageHandler.When(requestUri);
             mockHttpMessageHandler.Respond(requestUri, content);
             return mockHttpMessageHandler;
         }
