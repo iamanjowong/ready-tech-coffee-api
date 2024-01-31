@@ -1,0 +1,6 @@
+@ReadyTech.CoffeeAPI_HostAddress = http://localhost:5182
+
+GET {{ReadyTech.CoffeeAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
