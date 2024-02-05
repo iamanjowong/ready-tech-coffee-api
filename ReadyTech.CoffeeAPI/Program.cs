@@ -1,19 +1,14 @@
+using Microsoft.Extensions.Caching.Memory;
 using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
 using ReadyTech.CoffeeAPI.Domain.OpenWeatherMap;
-using ReadyTech.CoffeeAPI.Infrastructure.Middleware;
 using ReadyTech.CoffeeAPI.Infrastructure.Providers;
-using ReadyTech.CoffeeAPI.Infrastructure.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMemoryCache();
 
-builder.Services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new Iso8601DateTimeConverter());
-                });
+builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -36,13 +31,49 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseBrewCoffeeMiddleware();
+app.MapGet("/brew-coffee", async (IGetBrewCoffeeHandler getBrewCoffeeHandler) =>
+    { 
+        var response = await getBrewCoffeeHandler.HandleAsync();
+        return Results.Ok(response);
+    })
+    .AddEndpointFilter(async (endpointFilterInvocationContext, next) =>
+    {
+        var dateTimeProvider = app.Services.GetRequiredService<IDateTimeProvider>();
+        bool isTeapot() => dateTimeProvider.Now.Month == 4 && dateTimeProvider.Now.Day == 1;
 
-app.UseEndpoints(endpoints => 
-{
-    _ = endpoints.MapBrewCoffeeEndpoint("/brew-coffee");
-    _ = endpoints.MapControllers();
-});
+        if (isTeapot())
+        {
+            return Results.StatusCode(418);
+        }
+
+        return await next(endpointFilterInvocationContext);
+    })
+    .AddEndpointFilter(async (endpointFilterInvocationContext, next) =>
+    {
+        var memoryCache = app.Services.GetRequiredService<IMemoryCache>();
+
+        bool IsServiceUnavailable()
+        {
+            const string CallCounterKey = "CallCounter";
+            var callCounter = memoryCache.GetOrCreate(CallCounterKey, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return 0;
+            });
+
+            callCounter++;
+            memoryCache.Set(CallCounterKey, callCounter);
+
+            return callCounter % 5 == 0;
+        }
+
+        if (IsServiceUnavailable())
+        {
+            return Results.StatusCode(503);
+        }
+
+        return await next(endpointFilterInvocationContext);
+    });
 
 app.Run();
 
