@@ -2,6 +2,6 @@
 {
     public interface IGetBrewCoffeeHandler
     {
-        Task<GetBrewCoffeeResponse> HandleAsync();
+        ValueTask<GetBrewCoffeeResponse> HandleAsync();
     }
 }

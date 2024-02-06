@@ -8,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMemoryCache();
 
-builder.Services.AddControllers();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,6 +28,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+app.MapGet("/brew-test", () => "Hello world!");
 
 app.MapGet("/brew-coffee", async (IGetBrewCoffeeHandler getBrewCoffeeHandler) =>
     { 

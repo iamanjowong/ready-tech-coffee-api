@@ -2,12 +2,12 @@
 
 namespace ReadyTech.CoffeeAPI.Domain.OpenWeatherMap
 {
-    public class OpenWeatherMapClient(HttpClient httpClient, IOptions<OpenWeatherMapOptions> option)
+    public sealed class OpenWeatherMapClient(HttpClient httpClient, IOptions<OpenWeatherMapOptions> option)
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly OpenWeatherMapOptions _openWeatherMapOptions = option.Value;
 
-        public async Task<OpenWeatherMapResponse?> GetLatestWeatherAsync(string city)
+        public async ValueTask<OpenWeatherMapResponse?> GetLatestWeatherAsync(string city)
         {
             try
             {

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -89,7 +90,7 @@ namespace ReadyTech.CoffeeAPI.Tests
             // Assert
             var content = await response.Content.ReadAsStringAsync();
 
-            Assert.Equal("418", response.StatusCode.ToString());
+            Assert.Equal(StatusCodes.Status418ImATeapot, (int)response.StatusCode);
             Assert.Equal(string.Empty, content);
         }
 
@@ -109,7 +110,7 @@ namespace ReadyTech.CoffeeAPI.Tests
             // Assert
             var content = await response.Content.ReadAsStringAsync();
 
-            Assert.NotEqual("418", response.StatusCode.ToString());
+            Assert.NotEqual(StatusCodes.Status418ImATeapot, (int)response.StatusCode);
         }
 
         [Fact]
@@ -199,8 +200,48 @@ namespace ReadyTech.CoffeeAPI.Tests
             // Assert
             var content = await response.Content.ReadAsStringAsync();
 
-            Assert.Equal("418", response.StatusCode.ToString());
+            Assert.Equal(StatusCodes.Status418ImATeapot, (int)response.StatusCode);
             Assert.False(mockHttpMessageHandler.WasCalled());
+        }
+
+        [Fact]
+        public async Task WhenEndpointIsNotBrewCoffee_AndDateIsAprilFirst_ShouldNotReturn418()
+        {
+            // Arrange
+            var mockDateTimeProvider = DateTimeProvider(new DateTime(2023, 4, 1));
+            var client = CreateClientWithOverrides(services =>
+            {
+                services.AddSingleton(mockDateTimeProvider.Object);
+            });
+
+            // Act
+            var response = await client.GetAsync("/brew-test");
+
+            // Assert
+            var content = await response.Content.ReadAsStringAsync();
+
+            Assert.NotEqual(StatusCodes.Status418ImATeapot, (int)response.StatusCode);
+            Assert.Equal("Hello world!", content);
+        }
+
+        [Fact]
+        public async Task WhenEndpointIsNotBrewCoffee_AndOnEveryFifthCall_ShouldNotReturnServiceUnavailable()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act & Assert
+            for (var i = 1; i <= 10; i++)
+            {
+                var response = await client.GetAsync("/brew-test");
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (i % 5 == 0)
+                {
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                    Assert.Equal("Hello world!", content);
+                }
+            }
         }
 
         private static Mock<IDateTimeProvider> DateTimeProvider(DateTime customDateTime)

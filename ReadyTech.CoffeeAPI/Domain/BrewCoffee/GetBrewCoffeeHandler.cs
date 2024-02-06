@@ -8,7 +8,7 @@ namespace ReadyTech.CoffeeAPI.Domain.BrewCoffee
         private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
         private readonly OpenWeatherMapClient _openWeatherMapClient = openWeatherMapClient;
 
-        public async Task<GetBrewCoffeeResponse> HandleAsync() 
+        public async ValueTask<GetBrewCoffeeResponse> HandleAsync() 
         {
             var getCurrentWeather = await _openWeatherMapClient.GetLatestWeatherAsync("Sydney");
 
