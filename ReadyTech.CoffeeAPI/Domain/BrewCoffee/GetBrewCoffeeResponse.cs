@@ -1,4 +1,6 @@
-﻿namespace ReadyTech.CoffeeAPI.Domain.BrewCoffee
+﻿using System.Text.Json.Serialization;
+
+namespace ReadyTech.CoffeeAPI.Domain.BrewCoffee
 {
-    public record GetBrewCoffeeResponse(string Message, DateTime Prepared);
+    public record GetBrewCoffeeResponse(string Message, [property: JsonPropertyName("prepared")]DateTime Prepared);
 }

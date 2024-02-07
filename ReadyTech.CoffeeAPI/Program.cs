@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Caching.Memory;
 using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
 using ReadyTech.CoffeeAPI.Domain.OpenWeatherMap;
 using ReadyTech.CoffeeAPI.Infrastructure.Providers;
+using ReadyTech.CoffeeAPI.Infrastructure.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,10 @@ builder.Services.Configure<OpenWeatherMapOptions>(builder.Configuration.GetSecti
 builder.Services.AddHttpClient<OpenWeatherMapClient>();
 builder.Services.AddTransient<IGetBrewCoffeeHandler, GetBrewCoffeeHandler>();
 builder.Services.AddTransient<IDateTimeProvider, DateTimeProvider>();
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.Converters.Add(new Iso8601DateTimeConverter());
+});
 
 var app = builder.Build();
 
@@ -38,8 +44,11 @@ app.MapGet("/brew-coffee", async (IGetBrewCoffeeHandler getBrewCoffeeHandler) =>
     })
     .AddEndpointFilter(async (endpointFilterInvocationContext, next) =>
     {
-        var dateTimeProvider = app.Services.GetRequiredService<IDateTimeProvider>();
-        bool isTeapot() => dateTimeProvider.Now.Month == 4 && dateTimeProvider.Now.Day == 1;
+        bool isTeapot()
+        {
+            var dateTimeProvider = app.Services.GetRequiredService<IDateTimeProvider>();
+            return dateTimeProvider.Now.Month == 4 && dateTimeProvider.Now.Day == 1;
+        } 
 
         if (isTeapot())
         {
@@ -50,11 +59,10 @@ app.MapGet("/brew-coffee", async (IGetBrewCoffeeHandler getBrewCoffeeHandler) =>
     })
     .AddEndpointFilter(async (endpointFilterInvocationContext, next) =>
     {
-        var memoryCache = app.Services.GetRequiredService<IMemoryCache>();
-
-        bool IsServiceUnavailable()
+        bool isServiceUnavailable()
         {
             const string CallCounterKey = "CallCounter";
+            var memoryCache = app.Services.GetRequiredService<IMemoryCache>();
             var callCounter = memoryCache.GetOrCreate(CallCounterKey, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
@@ -67,7 +75,7 @@ app.MapGet("/brew-coffee", async (IGetBrewCoffeeHandler getBrewCoffeeHandler) =>
             return callCounter % 5 == 0;
         }
 
-        if (IsServiceUnavailable())
+        if (isServiceUnavailable())
         {
             return Results.StatusCode(503);
         }
