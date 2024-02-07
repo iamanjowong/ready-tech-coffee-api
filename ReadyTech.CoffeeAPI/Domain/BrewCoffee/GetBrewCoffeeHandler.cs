@@ -1,4 +1,4 @@
-﻿using ReadyTech.CoffeeAPI.Domain.OpenWeatherMap;
+﻿using ReadyTech.CoffeeAPI.Infrastructure.HttpClients.OpenWeatherMap;
 using ReadyTech.CoffeeAPI.Infrastructure.Providers;
 
 namespace ReadyTech.CoffeeAPI.Domain.BrewCoffee

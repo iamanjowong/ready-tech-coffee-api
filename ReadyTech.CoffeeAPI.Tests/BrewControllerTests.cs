@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
-using ReadyTech.CoffeeAPI.Domain.OpenWeatherMap;
+using ReadyTech.CoffeeAPI.Infrastructure.HttpClients.OpenWeatherMap;
 using ReadyTech.CoffeeAPI.Infrastructure.Providers;
 using ReadyTech.CoffeeAPI.Tests.Infrastructure;
 using System.Net;

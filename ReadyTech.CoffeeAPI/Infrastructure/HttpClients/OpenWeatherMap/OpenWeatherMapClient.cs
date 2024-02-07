@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 
-namespace ReadyTech.CoffeeAPI.Domain.OpenWeatherMap
+namespace ReadyTech.CoffeeAPI.Infrastructure.HttpClients.OpenWeatherMap
 {
     public sealed class OpenWeatherMapClient(HttpClient httpClient, IOptions<OpenWeatherMapOptions> option)
     {

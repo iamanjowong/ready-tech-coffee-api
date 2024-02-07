@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Caching.Memory;
 using ReadyTech.CoffeeAPI.Domain.BrewCoffee;
-using ReadyTech.CoffeeAPI.Domain.OpenWeatherMap;
+using ReadyTech.CoffeeAPI.Infrastructure.HttpClients.OpenWeatherMap;
 using ReadyTech.CoffeeAPI.Infrastructure.Providers;
 using ReadyTech.CoffeeAPI.Infrastructure.Utilities;
 

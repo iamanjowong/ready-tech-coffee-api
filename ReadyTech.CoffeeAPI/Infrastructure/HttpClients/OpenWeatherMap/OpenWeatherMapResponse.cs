@@ -1,4 +1,4 @@
-﻿namespace ReadyTech.CoffeeAPI.Domain.OpenWeatherMap
+﻿namespace ReadyTech.CoffeeAPI.Infrastructure.HttpClients.OpenWeatherMap
 {
     public class OpenWeatherMapResponse
     {
